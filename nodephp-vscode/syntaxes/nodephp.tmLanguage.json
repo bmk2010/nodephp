@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "NodePHP",
+  "scopeName": "source.nodephp",
+  "patterns": [
+    { "include": "#nodePhpBlocks" },
+    { "include": "text.html.basic" },
+    { "include": "#variables" },
+    { "include": "#functions" }
+  ],
+  "repository": {
+    "nodePhpBlocks": {
+      "begin": "<\\?nodephp",
+      "end": "\\?>",
+      "name": "meta.embedded.block.javascript",
+      "contentName": "source.js",
+      "patterns": [
+        { "include": "#variables" },
+        { "include": "#functions" },
+        { "include": "source.js" }
+      ]
+    },
+    "variables": {
+      "match": "\\$[a-zA-Z_][a-zA-Z0-9_]*",
+      "name": "variable.other.nodephp"
+    },
+    "functions": {
+      "match": "\\b(file|fetch)\\s*(?=\\()",
+      "name": "support.function.nodephp"
+    }
+  }
+}

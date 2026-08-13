@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NodePHP demo</title>
+  <style>
+    h1 { color: red; }
+    .card { border: 1px solid #ccc; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Hello, $name</h1>
+  <p class="card">Your age is $age</p>
+
+  <script>
+    const greet = (name) => "Hi " + name;
+    let x = $name;
+  </script>
+
+  <?nodephp
+    let data = file("POST");
+    let items = fetch("https://api.example.com/items");
+
+    res.write("<ul>");
+    for (const item of items.all()) {
+      res.write("<li>" + item.title + "</li>");
+    }
+    res.write("</ul>");
+  ?>
+</body>
+</html>

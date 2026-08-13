@@ -1,0 +1,36 @@
+{
+  "name": "nodephp-js",
+  "version": "1.0.5",
+  "description": "PHP-style syntax and file-based routing framework for Node.js and Vercel",
+  "type": "module",
+  "scripts": {
+    "test": "node test/run.mjs"
+  },
+  "main": "./vercel/index.js",
+  "bin": {
+    "nodephp": "./bin/cli.js"
+  },
+  "exports": {
+    "./vercel": "./vercel/index.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "vercel",
+    "README.md"
+  ],
+  "keywords": [
+    "nodephp",
+    "php",
+    "nodejs",
+    "framework",
+    "vercel",
+    "transpiler",
+    "routing"
+  ],
+  "author": "Ismingiz <email@example.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

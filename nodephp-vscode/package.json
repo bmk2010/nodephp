@@ -1,0 +1,47 @@
+{
+  "name": "nodephp-vscode",
+  "displayName": "NodePHP Language Support",
+  "description": "NodePHP (.np) tili uchun sintaksis highlight - PHP uslubidagi sintaksis, Node.js da ishlaydi",
+  "version": "0.0.1",
+  "publisher": "nodephp",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nodephp/nodephp-vscode"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "nodephp",
+    "php",
+    "node",
+    "html",
+    "template"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "nodephp",
+        "aliases": [
+          "NodePHP",
+          "nodephp"
+        ],
+        "extensions": [
+          ".np"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "nodephp",
+        "scopeName": "source.nodephp",
+        "path": "./syntaxes/nodephp.tmLanguage.json"
+      }
+    ]
+  }
+}
