@@ -1,0 +1,9 @@
+<style>
+h1 { color: red; }
+.btn { padding: 4px; }
+</style>
+<script>
+let counter = 0;
+function inc() { counter++; }
+</script>
+<h1>raw $x</h1>

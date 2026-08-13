@@ -1,0 +1,6 @@
+if (file("POST")) {
+  $name = file("POST").body("name");
+  <h1>POST: $name</h1>
+} else {
+  <p>Bu GET so'rovi</p>
+}

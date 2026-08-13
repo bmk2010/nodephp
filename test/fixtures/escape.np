@@ -1,0 +1,5 @@
+<?nodephp
+const upper = "salom".toUpperCase();
+res.write("<b>" + upper + "</b>");
+?>
+<h1>Done</h1>

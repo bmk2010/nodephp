@@ -28,8 +28,12 @@
     "transpiler",
     "routing"
   ],
-  "author": "Ismingiz <email@example.com>",
+  "author": "bmk2010",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bmk2010/nodephp"
+  },
   "dependencies": {
     "express": "^4.19.2"
   }

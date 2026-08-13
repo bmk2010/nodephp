@@ -1,0 +1,2 @@
+$data = { "ok": true, "msg": "salom" };
+res.json($data);
