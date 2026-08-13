@@ -4,9 +4,10 @@
   "scopeName": "source.nodephp",
   "patterns": [
     { "include": "#nodePhpBlocks" },
-    { "include": "text.html.basic" },
     { "include": "#variables" },
-    { "include": "#functions" }
+    { "include": "#functions" },
+    { "include": "#builtins" },
+    { "include": "text.html.basic" }
   ],
   "repository": {
     "nodePhpBlocks": {
@@ -14,9 +15,16 @@
       "end": "\\?>",
       "name": "meta.embedded.block.javascript",
       "contentName": "source.js",
+      "beginCaptures": {
+        "0": { "name": "keyword.control.nodephp" }
+      },
+      "endCaptures": {
+        "0": { "name": "keyword.control.nodephp" }
+      },
       "patterns": [
         { "include": "#variables" },
         { "include": "#functions" },
+        { "include": "#builtins" },
         { "include": "source.js" }
       ]
     },
@@ -27,6 +35,10 @@
     "functions": {
       "match": "\\b(file|fetch)\\s*(?=\\()",
       "name": "support.function.nodephp"
+    },
+    "builtins": {
+      "match": "\\b(res|req|console|process|globalThis)\\s*(\\.|\\()",
+      "name": "variable.language.nodephp"
     }
   }
 }
