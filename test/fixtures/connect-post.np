@@ -1,0 +1,4 @@
+<?nodephp
+const r = await connect(process.env.NODEPHP_TEST_URL + "/fixtures/post.np", "POST", { name: "Zafar" });
+res.write("postStatus:" + r.status + ";postBody:" + r.data);
+?>

@@ -2,7 +2,7 @@
   "name": "nodephp-vscode",
   "displayName": "NodePHP Language Support",
   "description": "NodePHP (.np) tili uchun sintaksis highlight - PHP uslubidagi sintaksis, Node.js da ishlaydi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "nodephp",
   "license": "MIT",
   "repository": {

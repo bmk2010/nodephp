@@ -67,6 +67,48 @@ res.write(upper);
 
 Blok ichidagi hamma narsa sof JS sifatida bajariladi. `$var` blok ichida ham o'zgaruvchi bo'lib qolaveradi.
 
+### Tarmoq so'rovi: `connect()`
+
+Tashqi manzilga HTTP so'rov yuboradi va `{ status, ok, data, headers }` qaytaradi. **`await` shart** (funksiya async):
+
+```php
+<?nodephp
+$r = await connect("https://api.example.com/users", "GET");
+res.write("status: " + $r.status);
+res.write("ism: " + $r.data.name);
+?>
+```
+
+- `connect(url)` — GET so'rovi (avtomatik JSON parse)
+- `connect(url, "POST", data)` — JSON body bilan POST/PUT/PATCH/DELETE
+
+### Fayllar bilan ishlash: `readFile()`, `writeFile()`
+
+```php
+<?nodephp
+writeFile("data.txt", "salom dunyo");
+$content = readFile("data.txt");
+res.write($content);
+?>
+```
+
+- `writeFile(path, data)` — yangi fayl yaratadi yoki mavjud faylni to'liq ustiga yozadi (obyekt bo'lsa JSON), `true` qaytaradi
+- `readFile(path)` — fayl kontentini qaytaradi; fayl topilmasa yoki bo'sh bo'lsa xato tashlaydi
+
+### Faylni to'xtatish: `kill;`
+
+`kill;` buyrug'i fayl bajarilishini shu nuqtada **majburiy to'xtatadi** — keyingi qatorlar bajarilmaydi:
+
+```php
+<?nodephp
+if (true) {
+    res.write("salom");
+    kill;
+}
+res.write("bu hech qachon chiqmaydi");
+?>
+```
+
 ### `<style>` va `<script>` bloklari
 
 Ularning ichidagi matn o'zgartirilmasdan (CSS/JS xom matn sifatida) chiqariladi.

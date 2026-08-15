@@ -1,0 +1,7 @@
+<?nodephp
+const targetPath = process.env.NODEPHP_TEST_FILE;
+const data = process.env.NODEPHP_TEST_DATA;
+writeFile(targetPath, data);
+const content = readFile(targetPath);
+res.write("content:" + content);
+?>

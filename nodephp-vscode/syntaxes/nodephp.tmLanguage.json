@@ -4,6 +4,8 @@
   "scopeName": "source.nodephp",
   "patterns": [
     { "include": "#nodePhpBlocks" },
+    { "include": "#kill" },
+    { "include": "#jsStatements" },
     { "include": "#variables" },
     { "include": "#functions" },
     { "include": "#builtins" },
@@ -25,6 +27,21 @@
         { "include": "#variables" },
         { "include": "#functions" },
         { "include": "#builtins" },
+        { "include": "#kill" },
+        { "include": "source.js" }
+      ]
+    },
+    "kill": {
+      "match": "^\\s*\\b(kill)(?=\\s*;)",
+      "captures": {
+        "1": { "name": "keyword.control.nodephp" }
+      }
+    },
+    "jsStatements": {
+      "begin": "^(?=\\s*(?:\\$(?:[A-Za-z_]\\w*)\\s*=|(?:const|let|var|if|else|for|while|switch|case|default|function|class|return|throw|break|continue|new|try|catch|finally|do|typeof|delete|async|await|import|export)\\b|(?:res|req|console|process|globalThis)\\s*\\.))\\s*",
+      "end": "$",
+      "contentName": "source.js",
+      "patterns": [
         { "include": "source.js" }
       ]
     },
@@ -33,7 +50,7 @@
       "name": "variable.other.nodephp"
     },
     "functions": {
-      "match": "\\b(file|fetch)\\s*(?=\\()",
+      "match": "\\b(file|fetch|connect|readFile|writeFile)\\s*(?=\\()",
       "name": "support.function.nodephp"
     },
     "builtins": {

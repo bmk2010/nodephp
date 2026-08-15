@@ -1,0 +1,9 @@
+<?nodephp
+if (true) {
+    res.write("before");
+    kill;
+}
+
+console.log("bu yerga hech qachon otib bolmaydi chunki tepada kill bor.");
+res.write("after");
+?>
