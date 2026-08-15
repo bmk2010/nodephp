@@ -17,7 +17,6 @@ if (command === "start") {
 } else if (command === "init" || command === "build") {
   // Vercel uchun kerakli fayllarni foydalanuvchi loyihasiga avto-generatsiya qilish
   const userRootDir = process.cwd();
-  const packageDir = path.join(__dirname, "..");
 
   // 1. api/index.js (Vercel Handler) ni nusxalash
   const apiDir = path.join(userRootDir, "api");
@@ -48,11 +47,30 @@ export default async function handler(req, res) {
   };
   fs.writeFileSync(
     path.join(userRootDir, "vercel.json"),
-    JSON.stringify(vercelConfig, null, 2),
+    JSON.stringify(vercelConfig, null, 2)
   );
 
+  // 3. Test uchun namuna index.np faylini yaratish (agar mavjud bo'lmasa)
+  const sampleNpPath = path.join(userRootDir, "index.np");
+  if (!fs.existsSync(sampleNpPath)) {
+    const sampleContent = `$name = "Muhammadhakim";
+$title = "NodePHP Engine Test";
+
+<html>
+  <head>
+    <title>$title</title>
+  </head>
+  <body>
+    <h1>Salom, $name!</h1>
+    <p>NodePHP muvaffaqiyatli ishlayapti 🚀</p>
+  </body>
+</html>
+`;
+    fs.writeFileSync(sampleNpPath, sampleContent, "utf-8");
+  }
+
   console.log(
-    "✅ NodePHP: Vercel konfiguratsiyasi muvaffaqiyatli tayyorlandi!",
+    "✅ NodePHP: Vercel konfiguratsiyasi va test fayllari muvaffaqiyatli tayyorlandi!"
   );
 } else {
   console.log(`
@@ -60,6 +78,6 @@ export default async function handler(req, res) {
 
   Buyruqlar:
     nodephp start    - Lokalda test qilish (default port: 3000)
-    nodephp build    - Vercel uchun konfiguratsiyani tayyorlash
+    nodephp build    - Vercel uchun konfiguratsiyani tayyorlash (init)
   `);
-}
+} 
