@@ -69,11 +69,11 @@ Blok ichidagi hamma narsa sof JS sifatida bajariladi. `$var` blok ichida ham o'z
 
 ### Tarmoq so'rovi: `connect()`
 
-Tashqi manzilga HTTP so'rov yuboradi va `{ status, ok, data, headers }` qaytaradi. **`await` shart** (funksiya async):
+Tashqi manzilga HTTP so'rov yuboradi va `{ status, ok, data, headers }` qaytaradi. **Sinxron — `await` shart emas**:
 
 ```php
 <?nodephp
-$r = await connect("https://api.example.com/users", "GET");
+$r = connect("https://api.example.com/users", "GET");
 res.write("status: " + $r.status);
 res.write("ism: " + $r.data.name);
 ?>
@@ -81,6 +81,10 @@ res.write("ism: " + $r.data.name);
 
 - `connect(url)` — GET so'rovi (avtomatik JSON parse)
 - `connect(url, "POST", data)` — JSON body bilan POST/PUT/PATCH/DELETE
+
+> **Eslatma:** `connect()` sinxron ishlaydi (so'rov davomida server navbatdagi so'rovga javob bermaydi), shuning uchun uni O'Z serveringizdagi `.np` faylga chaqirmang — bu o'lik turg'unlikka (deadlock) olib keladi.
+>
+> `connect()` ichida `worker_threads` ishlatiladi: bitta doimiy worker mavjud, har chaqiruvda yangi Node jarayoni ochilmaydi (Vercel'da kechikish kam). Ma'lumotlar `postMessage` (structured clone) orqali xavfsiz uzatiladi — qo'shtirnoq, `${...}`, qiya chiziq kabi belgilar buzilmaydi.
 
 ### Fayllar bilan ishlash: `readFile()`, `writeFile()`
 

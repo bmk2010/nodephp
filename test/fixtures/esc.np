@@ -1,0 +1,8 @@
+<?nodephp
+$name = "Ali";
+?>
+<p>Yo'l C:\Windows\system32</p>
+<p>${foo} va $5.00</p>
+<p>qator\ntext</p>
+<p>`code` blok</p>
+<p>Salom $name!</p>

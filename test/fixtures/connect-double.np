@@ -1,0 +1,5 @@
+<?nodephp
+$a = connect(process.env.NODEPHP_TEST_URL + "/fixtures/basic.np", "GET");
+$b = connect(process.env.NODEPHP_TEST_URL + "/fixtures/json.np", "GET");
+res.write("first:" + $a.status + ";second:" + $b.status + ";msg:" + $b.data.msg);
+?>

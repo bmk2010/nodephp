@@ -1,0 +1,4 @@
+<?nodephp
+$r = connect(process.env.NODEPHP_TEST_URL + "/fixtures/post.np", "POST", { name: 'Yo"l va ${o} va \\ qator' });
+res.write("postBody:" + $r.data);
+?>

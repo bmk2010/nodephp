@@ -1,0 +1,4 @@
+<?nodephp
+$r = connect(process.env.NODEPHP_TEST_URL + "/fixtures/json.np", "GET");
+res.write("status:" + $r.status + ";ok:" + $r.data.ok + ";msg:" + $r.data.msg);
+?>

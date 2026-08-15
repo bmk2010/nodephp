@@ -1,8 +1,9 @@
 import { executeNodePHP, transpileNodePHP } from "../lib/engine.js";
 import { startServer } from "../lib/server.js";
+import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const fixturesDir = path.join(__dirname, "fixtures");
@@ -119,6 +120,16 @@ function transpileTests() {
   out = transpileNodePHP("<p>a`b</p>");
   assert("backtick escaped", out, "a\\`b", { includes: true });
 
+  out = transpileNodePHP("<p>a\\nb</p>");
+  assert("backslash doubled", out, "a\\\\nb", { includes: true });
+
+  out = transpileNodePHP("<p>${foo}</p>");
+  assert("literal ${} escaped", out, "\\${foo}", { includes: true });
+
+  out = transpileNodePHP("<p>var_speed is high</p>");
+  assertTrue("literal var_ text not interpolated", !out.includes("${var_speed"));
+  assert("literal var_ text kept", out, "var_speed is high", { includes: true });
+
   out = transpileNodePHP("<p>for more info</p>");
   assert("keyword-in-text not JS", out, "for more info", { includes: true });
   assert("keyword-in-text emitted as HTML", out, "res.write", { includes: true });
@@ -177,6 +188,15 @@ async function runtimeTests() {
   await executeNodePHP(path.join(fixturesDir, "escape.np"), makeReq("GET", "/escape.np"), res);
   assert("escape block res.write", res.body, "<b>SALOM</b>", { includes: true });
   assert("escape block followed by HTML", res.body, "Done", { includes: true });
+
+  res = makeRes();
+  await executeNodePHP(path.join(fixturesDir, "esc.np"), makeReq("GET", "/esc.np"), res);
+  assert("esc backslash kept", res.body, "C:\\Windows\\system32", { includes: true });
+  assert("esc literal ${} kept", res.body, "${foo} va $5.00", { includes: true });
+  assert("esc backslash-n literal", res.body, "qator\\ntext", { includes: true });
+  assert("esc backtick literal", res.body, "`code` blok", { includes: true });
+  assert("esc interpolates real var", res.body, "Salom Ali!", { includes: true });
+  assertTrue("esc runs without SyntaxError", res.statusCode === 200);
 
   res = makeRes();
   await executeNodePHP(path.join(fixturesDir, "json.np"), makeReq("GET", "/json.np"), res);
@@ -268,7 +288,41 @@ async function e2eTests() {
   const r3 = await fetch(`${base}/no-such-file.np`);
   assert("e2e missing -> 404", r3.status, 404);
 
+  const r6 = await fetch(`${base}/fixtures/kill.np`);
+  const b6 = await r6.text();
+  assert("e2e kill -> 200", r6.status, 200);
+  assertTrue("e2e kill stops before after", !b6.includes("after"));
+
   process.env.NODEPHP_TEST_URL = base;
+
+  // connect() sinxron - parent event loop'ni bloklaydi, shuning uchun
+  // connect hech qachon O'ZI ishlayotgan serverga chaqirilmasligi kerak.
+  // Testda alohida (subprocess) responder server ishlatamiz.
+  const serverModuleURL = pathToFileURL(path.join(__dirname, "..", "lib", "server.js")).href;
+  const responderScript = `
+    import { startServer } from ${JSON.stringify(serverModuleURL)};
+    console.log = () => {};
+    const server = startServer(0);
+    server.on("listening", () => process.stdout.write(String(server.address().port) + "\\n"));
+  `;
+  const responder = spawn(process.execPath, ["--input-type=module", "-e", responderScript], {
+    cwd: __dirname,
+    stdio: ["ignore", "pipe", "inherit"],
+  });
+  const responderPort = await new Promise((resolve, reject) => {
+    const onData = (buf) => {
+      const portStr = buf.toString().trim();
+      if (portStr) {
+        responder.stdout.off("data", onData);
+        resolve(parseInt((portStr.match(/\d+/) || ["0"])[0], 10));
+      }
+    };
+    responder.stdout.on("data", onData);
+    responder.on("error", reject);
+    setTimeout(() => reject(new Error("responder server start timeout")), 5000).unref();
+  });
+  process.env.NODEPHP_TEST_URL = `http://localhost:${responderPort}`;
+
   const r4 = await fetch(`${base}/fixtures/connect.np`);
   const b4 = await r4.text();
   assert("e2e connect GET json -> 200", r4.status, 200);
@@ -279,11 +333,32 @@ async function e2eTests() {
   assert("e2e connect POST -> 200", r5.status, 200);
   assert("e2e connect POST body passthrough", b5, "POST: Zafar", { includes: true });
 
-  const r6 = await fetch(`${base}/fixtures/kill.np`);
-  const b6 = await r6.text();
-  assert("e2e kill -> 200", r6.status, 200);
-  assertTrue("e2e kill stops before after", !b6.includes("after"));
+  const r7 = await fetch(`${base}/fixtures/connect-sync.np`);
+  const b7 = await r7.text();
+  assert("e2e connect WITHOUT await -> 200", r7.status, 200);
+  assert("e2e connect sync data (no await)", b7, "status:200;ok:true;msg:salom", { includes: true });
 
+  const r8 = await fetch(`${base}/fixtures/connect-escape.np`);
+  const b8 = await r8.text();
+  assert("e2e connect escaping -> 200", r8.status, 200);
+  assert(
+    "e2e connect escaping (quotes, ${}, backslash)",
+    b8,
+    'postBody:  <h1>POST: Yo"l va ${o} va \\ qator</h1>',
+    { includes: true },
+  );
+
+  const r9 = await fetch(`${base}/fixtures/connect-double.np`);
+  const b9 = await r9.text();
+  assert("e2e connect twice -> 200", r9.status, 200);
+  assert(
+    "e2e connect twice (same worker, sequential signals)",
+    b9,
+    "first:200;second:200;msg:salom",
+    { includes: true },
+  );
+
+  responder.kill();
   delete process.env.NODEPHP_TEST_URL;
   server.close();
 }
