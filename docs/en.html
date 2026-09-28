@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NodePHP — Documentation (English)</title>
+<meta name="description" content="NodePHP is a tiny framework that lets you write HTML and JavaScript together in .np files. Installation, syntax, file(), connect(), readFile(), writeFile(), kill; — the complete guide.">
+<link rel="alternate" hreflang="uz" href="./uz.html">
+<link rel="alternate" hreflang="en" href="./en.html">
+<link rel="canonical" href="./en.html">
+<meta property="og:title" content="NodePHP — Documentation">
+<meta property="og:description" content="PHP-style syntax and file-based routing for Node.js and Vercel.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐘</text></svg>">
+<script>
+  if (localStorage.getItem('nodephp-theme') === 'dark' ||
+     (!localStorage.getItem('nodephp-theme') && matchMedia('(prefers-color-scheme: dark)').matches))
+    document.documentElement.classList.add('dark');
+</script>
+  <link rel="stylesheet" href="./app.css">
+</head>
+
+<body class="font-sans">
+
+<!-- ================= TOP BAR ================= -->
+<header class="sticky top-0 z-50 border-b border-ink-200/70 bg-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-ink-950/80">
+  <div class="mx-auto flex h-16 max-w-[1400px] items-center gap-3 px-4 sm:px-6">
+
+    <a href="./en.html" class="flex items-center gap-2 font-bold tracking-tight">
+      <span class="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-base shadow-sm shadow-brand-500/30">🐘</span>
+      <span class="text-[17px]">NodePHP</span>
+    </a>
+
+    <span class="hidden rounded-md bg-ink-100 px-2 py-0.5 font-mono text-[11px] font-semibold text-ink-500 sm:inline dark:bg-white/10 dark:text-ink-400">v1.0.8</span>
+
+    <nav class="ml-3 hidden items-center gap-5 text-sm text-ink-600 md:flex dark:text-ink-400">
+      <a href="#intro" class="hover:text-brand-600 dark:hover:text-brand-300">Intro</a>
+      <a href="#syntax" class="hover:text-brand-600 dark:hover:text-brand-300">Syntax</a>
+      <a href="#api" class="hover:text-brand-600 dark:hover:text-brand-300">API</a>
+      <a href="#limitations" class="hover:text-brand-600 dark:hover:text-brand-300">Limitations</a>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-1.5">
+
+      <div class="flex items-center rounded-lg border border-ink-200 p-0.5 text-[13px] font-medium dark:border-white/15">
+        <a href="./uz.html" class="rounded-md px-2.5 py-1 text-ink-500 transition hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-white/10 dark:hover:text-ink-100">UZ</a>
+        <span class="rounded-md bg-brand-500 px-2.5 py-1 text-white">EN</span>
+      </div>
+
+      <button type="button" data-theme-toggle aria-pressed="false" aria-label="Toggle theme"
+        class="grid size-9 place-items-center rounded-lg border border-ink-200 text-ink-500 transition hover:bg-ink-100 hover:text-ink-800 dark:border-white/15 dark:text-ink-400 dark:hover:bg-white/10 dark:hover:text-white">
+        <svg data-theme-icon data-active="0" class="size-[18px] dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg data-theme-icon data-active="1" class="hidden size-[18px] dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+
+      <a href="https://github.com/bmk2010/nodephp" target="_blank" rel="noreferrer"
+        class="hidden size-9 place-items-center rounded-lg border border-ink-200 text-ink-500 transition hover:bg-ink-100 hover:text-ink-800 sm:grid dark:border-white/15 dark:text-ink-400 dark:hover:bg-white/10 dark:hover:text-white">
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.38-3.88-1.38-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.75.41-1.27.74-1.56-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.49.11-3.1 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.5 3.17-1.18 3.17-1.18.63 1.61.23 2.81.12 3.1.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.42.36.8 1.06.8 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
+      </a>
+
+      <button type="button" data-nav-toggle aria-expanded="false" aria-label="Menu"
+        class="grid size-9 place-items-center rounded-lg border border-ink-200 text-ink-500 md:hidden dark:border-white/15 dark:text-ink-400">
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="relative overflow-hidden border-b border-ink-200/70 dark:border-white/10">
+  <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,var(--color-brand-200),transparent)] dark:bg-[radial-gradient(60%_50%_at_50%_0%,var(--color-brand-900),transparent)]"></div>
+
+  <div class="mx-auto max-w-[1400px] px-4 py-16 sm:px-6 sm:py-20">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/70 px-3 py-1 text-[13px] font-medium text-brand-700 backdrop-blur dark:border-brand-400/25 dark:bg-white/5 dark:text-brand-300">
+        <span class="size-1.5 rounded-full bg-brand-500"></span> v1.0.8 — no Markdown, just HTML
+      </span>
+
+      <h1 class="mt-5 text-4xl font-black tracking-tight text-ink-900 sm:text-6xl dark:text-white">
+        NodePHP
+      </h1>
+
+      <p class="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-ink-600 sm:text-xl dark:text-ink-300">
+        Write HTML and JavaScript together in a <code class="rounded-md bg-ink-100 px-1.5 py-0.5 font-mono text-[0.85em] text-brand-700 dark:bg-white/10 dark:text-brand-300">.np</code>
+        file — no build step, no template language to learn.
+      </p>
+
+      <div class="group relative mx-auto mt-8 flex max-w-md items-center gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 text-left shadow-sm dark:border-white/15 dark:bg-ink-900" data-code>
+        <span class="select-none font-mono text-xs text-ink-400">$</span>
+        <code class="flex-1 font-mono text-sm text-ink-800 dark:text-ink-100">npm install nodephp-js</code>
+      </div>
+
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+        <a href="#quick-start" class="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:bg-brand-700">Quick start</a>
+        <a href="https://www.npmjs.com/package/nodephp-js" target="_blank" rel="noreferrer" class="rounded-lg border border-ink-200 bg-white px-5 py-2.5 text-sm font-semibold text-ink-700 transition hover:bg-ink-50 dark:border-white/15 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-white/10">View on npm</a>
+      </div>
+
+      <dl class="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-ink-200 bg-ink-200 text-left sm:grid-cols-4 dark:border-white/10 dark:bg-white/10">
+        <div class="bg-white px-4 py-4 dark:bg-ink-950">
+          <dt class="text-[11px] font-medium tracking-wide text-ink-400 uppercase">Dependencies</dt>
+          <dd class="mt-1 font-semibold text-ink-900 dark:text-white">one</dd>
+        </div>
+        <div class="bg-white px-4 py-4 dark:bg-ink-950">
+          <dt class="text-[11px] font-medium tracking-wide text-ink-400 uppercase">Build step</dt>
+          <dd class="mt-1 font-semibold text-ink-900 dark:text-white">none</dd>
+        </div>
+        <div class="bg-white px-4 py-4 dark:bg-ink-950">
+          <dt class="text-[11px] font-medium tracking-wide text-ink-400 uppercase">Serverless</dt>
+          <dd class="mt-1 font-semibold text-ink-900 dark:text-white">Vercel</dd>
+        </div>
+        <div class="bg-white px-4 py-4 dark:bg-ink-950">
+          <dt class="text-[11px] font-medium tracking-wide text-ink-400 uppercase">License</dt>
+          <dd class="mt-1 font-semibold text-ink-900 dark:text-white">MIT</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BODY ================= -->
+<div class="mx-auto grid max-w-[1400px] gap-10 px-4 py-12 sm:px-6 md:grid-cols-[210px_minmax(0,1fr)] lg:gap-14">
+
+  <!-- ---------- SIDEBAR ---------- -->
+  <aside data-sidebar class="hidden md:block">
+    <nav class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2 pb-8">
+      <p class="mb-3 text-[11px] font-semibold tracking-wider text-ink-400 uppercase">Contents</p>
+      <ul class="space-y-0.5 border-l border-ink-200 dark:border-white/10">
+        <li><a class="toc-link" href="#intro">Introduction</a></li>
+        <li><a class="toc-link" href="#install">Installation</a></li>
+        <li><a class="toc-link" href="#quick-start">Quick start</a></li>
+        <li><a class="toc-link" href="#routing">Routing</a></li>
+        <li><a class="toc-link" href="#syntax">Syntax</a></li>
+        <li><a class="toc-link" href="#line-rules">Line rules</a></li>
+        <li><a class="toc-link" href="#escape-blocks">&lt;?nodephp ?&gt; blocks</a></li>
+        <li><a class="toc-link" href="#raw-blocks">style / script blocks</a></li>
+        <li><a class="toc-link" href="#request">Request data</a></li>
+        <li><a class="toc-link" href="#connect">Outgoing requests</a></li>
+        <li><a class="toc-link" href="#files">Working with files</a></li>
+        <li><a class="toc-link" href="#kill">Stopping: kill;</a></li>
+        <li><a class="toc-link" href="#response-api">res / req / console</a></li>
+        <li><a class="toc-link" href="#api">API table</a></li>
+        <li><a class="toc-link" href="#cli">CLI commands</a></li>
+        <li><a class="toc-link" href="#vercel">Deploy to Vercel</a></li>
+        <li><a class="toc-link" href="#vscode">VS Code extension</a></li>
+        <li><a class="toc-link" href="#architecture">How it works</a></li>
+        <li><a class="toc-link" href="#limitations">Limitations</a></li>
+        <li><a class="toc-link" href="#faq">FAQ</a></li>
+      </ul>
+
+      <div class="mt-8 rounded-xl border border-ink-200 bg-ink-50 p-4 dark:border-white/10 dark:bg-white/5">
+        <p class="text-[13px] font-semibold text-ink-800 dark:text-white">Want release updates?</p>
+        <p class="mt-1 text-[13px] leading-relaxed text-ink-500 dark:text-ink-400">Star the repo on GitHub — I ship new versions from there.</p>
+        <a href="https://github.com/bmk2010/nodephp" target="_blank" rel="noreferrer" class="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-brand-600 hover:underline dark:text-brand-300">GitHub &rarr;</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ---------- CONTENT ---------- -->
+  <main class="doc min-w-0 max-w-3xl pb-24">
+
+    <!-- ===== INTRO ===== -->
+    <section id="intro">
+      <h2>Introduction</h2>
+      <p>
+        NodePHP is a small framework that lets you write <strong>HTML</strong> and
+        <strong>JavaScript</strong> in the same file. The file gets the <code>.np</code>
+        extension, and when a request comes in, NodePHP compiles it and streams the
+        result straight back as the response.
+      </p>
+      <p>
+        The whole idea is to delete an entire category of work: no build step, no template
+        language, no routing configuration. You write a file; the framework handles the
+        rest.
+      </p>
+
+      <h3>Why</h3>
+      <ul>
+        <li><strong>One file, one whole page.</strong> Logic and markup sit side by side — no imports, no layouts.</li>
+        <li><strong>The file is the URL.</strong> <code>about.np</code> automatically serves <code>/about</code>.</li>
+        <li><strong>Serverless ready.</strong> Works on Vercel with a single function — no server to provision.</li>
+        <li><strong>One dependency.</strong> Just <code>express</code>. Nothing to install to change anything.</li>
+      </ul>
+
+      <div class="callout callout-info">
+        <span class="mt-0.5 text-lg leading-none">💡</span>
+        <p class="m-0"><strong>In short:</strong> NodePHP borrows PHP's <em>feel</em> but is a completely different thing — it doesn't change the compile target. It only rewrites <code>$variable</code> into valid JavaScript.</p>
+      </div>
+    </section>
+
+    <!-- ===== INSTALL ===== -->
+    <section id="install">
+      <h2>Installation</h2>
+      <p>Requires Node.js 18 or newer.</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">terminal</span>
+        <pre class="np-code"><code>npm install nodephp-js</code></pre>
+      </div>
+
+      <p>To use the CLI globally:</p>
+      <div class="my-5" data-code>
+        <span class="np-label">terminal</span>
+        <pre class="np-code"><code>npm install -g nodephp-js</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== QUICK START ===== -->
+    <section id="quick-start">
+      <h2>Quick start</h2>
+
+      <h3>1. Create a project</h3>
+      <div class="my-5" data-code>
+        <span class="np-label">terminal</span>
+        <pre class="np-code"><code>mkdir mysite &amp;&amp; cd mysite
+npm init -y
+npm install nodephp-js</code></pre>
+      </div>
+
+      <h3>2. Write your first file</h3>
+      <p>Create <code>index.np</code> and put this in it:</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>$name = "Muhammadhakim";
+$date = "2026";
+
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;$name — NodePHP&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello, $name!&lt;/h1&gt;
+    &lt;p&gt;Today: $date&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+
+      <h3>3. Start the server</h3>
+      <div class="my-5" data-code>
+        <span class="np-label">terminal</span>
+        <pre class="np-code"><code>npx nodephp start</code></pre>
+      </div>
+
+      <p>Open <a href="http://localhost:3000/index.np" target="_blank" rel="noreferrer">http://localhost:3000/index.np</a> in your browser.</p>
+
+      <div class="callout callout-ok">
+        <span class="mt-0.5 text-lg leading-none">✅</span>
+        <p class="m-0">Result: <em>Hello, Muhammadhakim!</em> — served with zero build tooling in the loop.</p>
+      </div>
+    </section>
+
+    <!-- ===== ROUTING ===== -->
+    <section id="routing">
+      <h2>Routing</h2>
+      <p>There is no router to configure. A file's position on disk <strong>is</strong> its URL.</p>
+
+      <div class="my-5 overflow-x-auto">
+        <table>
+          <thead>
+            <tr><th>File</th><th>Request</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>index.np</code></td><td><code>/</code> or <code>/index.np</code></td><td>200 — <code>index.np</code></td></tr>
+            <tr><td><code>blog.np</code></td><td><code>/blog</code> or <code>/blog.np</code></td><td>200 — <code>blog.np</code></td></tr>
+            <tr><td><code>blog.np</code></td><td><code>/blog?page=2</code></td><td>200 — <code>blog.np</code> + query</td></tr>
+            <tr><td><code>api/post.np</code></td><td><code>/api/post</code></td><td>200 — <code>api/post.np</code></td></tr>
+            <tr><td>—</td><td><code>/missing</code></td><td>404 JSON</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="mt-0.5 text-lg leading-none">⚠️</span>
+        <p class="m-0"><strong>On the local server</strong> only URLs ending in <code>.np</code> are accepted; everything else 404s. That's deliberate — routing should only ever reach your own files.</p>
+      </div>
+    </section>
+
+    <!-- ===== SYNTAX ===== -->
+    <section id="syntax">
+      <h2>Syntax</h2>
+      <p>
+        NodePHP reads a file <strong>line by line</strong>. Each line is classified as one
+        of two things: <strong>JavaScript</strong> or <strong>HTML</strong>.
+      </p>
+
+      <h3 id="variables">Variables with <code>$</code></h3>
+      <p>
+        A name starting with <code>$</code> is a NodePHP variable. Full JavaScript
+        expression syntax works inside it: <code>=</code>, <code>+</code>,
+        <code>==</code>, <code>===</code>, <code>??</code> and so on.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>$name = "Alice";
+$age = 30;
+$isMinor = $age &lt; 18;
+
+&lt;h1&gt;$name — $age years old&lt;/h1&gt;
+
+if ($isMinor) {
+  &lt;p&gt;Minor&lt;/p&gt;
+} else {
+  &lt;p&gt;Adult&lt;/p&gt;
+}</code></pre>
+      </div>
+
+      <p>Inside HTML, <code>$variable</code> is replaced with its value. Interpolation also works for property chains like <code>$config.title</code> and constant indices like <code>$items[0]</code>.</p>
+
+      <h3 id="logic">JavaScript logic</h3>
+      <p>A line starting with <code>if</code>, <code>for</code>, <code>while</code>, <code>switch</code>, <code>const</code> and friends is treated as JavaScript and executed as-is.</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>$products = [
+  { name: "Apple",  price: 5 },
+  { name: "Banana", price: 8 }
+];
+
+&lt;h1&gt;Products&lt;/h1&gt;
+
+for ($i = 0; $i &lt; 2; $i++) {
+  $p = $products[$i];
+  &lt;div class="product"&gt;
+    &lt;b&gt;$p.name&lt;/b&gt; — $p.price
+  &lt;/div&gt;
+}</code></pre>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="mt-0.5 text-lg leading-none">🚨</span>
+        <p class="m-0"><strong>Critical:</strong> indexing with a variable inside HTML (<code>$items[$i]</code>) does not work — <code>$i</code> survives into the interpolation and produces a <code>SyntaxError</code> (HTTP 500). Assign to a plain variable first, as in the example above (<code>$p = $products[$i];</code>). Details: <a href="#limitations">Limitations</a>.</p>
+      </div>
+
+      <h3>Supported constructs</h3>
+      <ul>
+        <li>Variable assignment and mutation</li>
+        <li><code>if</code> / <code>else if</code> / <code>else</code></li>
+        <li><code>for</code>, <code>while</code>, <code>do...while</code></li>
+        <li><code>switch</code> / <code>case</code> / <code>default</code></li>
+        <li><code>try</code> / <code>catch</code> / <code>finally</code></li>
+        <li>Functions (written across multiple lines)</li>
+        <li>Multi-line array and object literals</li>
+        <li><code>async</code> / <code>await</code></li>
+        <li><code>res</code>, <code>req</code>, <code>console</code>, <code>process</code></li>
+      </ul>
+    </section>
+
+    <!-- ===== LINE RULES ===== -->
+    <section id="line-rules">
+      <h2>Line rules</h2>
+      <p>To tell HTML and JavaScript apart, NodePHP classifies each line using the rules below. Worth knowing regardless of whether you hit any of the edge cases.</p>
+
+      <div class="my-5 overflow-x-auto">
+        <table>
+          <thead>
+            <tr><th>Line</th><th>Read as</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>&lt;h1&gt;Hello&lt;/h1&gt;</code></td><td>HTML — starts with <code>&lt;</code></td></tr>
+            <tr><td><code>$x = 1;</code></td><td>JS — <code>$var =</code></td></tr>
+            <tr><td><code>if ($n &gt; 2) {</code></td><td>JS — <code>if</code> + <code>(</code></td></tr>
+            <tr><td><code>for more info</code></td><td>HTML — keyword, but no <code>(</code></td></tr>
+            <tr><td><code>for ($i = 0; ...)</code></td><td>JS — keyword + <code>(</code></td></tr>
+            <tr><td><code>const a = [</code></td><td>JS — following lines stay JS (bracket depth)</td></tr>
+            <tr><td><code>}</code> or <code>});</code></td><td>JS</td></tr>
+            <tr><td><code>res.write("x");</code></td><td>JS</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Escaping rules</h3>
+      <ul>
+        <li><code>$</code> always means a NodePHP variable. A price like <code>$5.00</code> stays literal text, but jQuery's <code>$</code> will not work.</li>
+        <li>Literal <code>${...}</code>, backticks <code>`</code> and backslashes <code>\</code> in HTML text are escaped automatically — they reach the browser untouched.</li>
+        <li>If a line contains a <code>//</code> comment, the lines after it are <strong>always</strong> treated as HTML. Convenient, but be aware of it.</li>
+      </ul>
+
+      <div class="callout callout-info">
+        <span class="mt-0.5 text-lg leading-none">🧩</span>
+        <p class="m-0"><strong>Rule of thumb:</strong> HTML tags <em>always go on their own line</em>. Mixing them onto a single JS line — <code>if ($x) { &lt;p&gt;yes&lt;/p&gt; }</code> — is a 500 error.</p>
+      </div>
+    </section>
+
+    <!-- ===== ESCAPE BLOCKS ===== -->
+    <section id="escape-blocks">
+      <h2><code>&lt;?nodephp ... ?&gt;</code> blocks</h2>
+      <p>
+        Sometimes line-by-line detection isn't enough — a plain function call or a complex
+        expression, for example. In those cases, everything between
+        <code>&lt;?nodephp</code> and <code>?&gt;</code> runs as <strong>pure
+        JavaScript</strong>.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>&lt;?nodephp
+const shout = "hello".toUpperCase();
+res.write("&lt;b&gt;" + shout + "&lt;/b&gt;");
+?&gt;
+
+&lt;h1&gt;Everything after is plain HTML again&lt;/h1&gt;</code></pre>
+      </div>
+
+      <p>
+        <code>$variable</code> stays a variable inside the block, so you can use it both
+        inside and after.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>&lt;?nodephp
+$items = ["Apple", "Banana", "Pear"];
+?&gt;
+
+&lt;ul&gt;
+&lt;?nodephp
+for (let i = 0; i &lt; $items.length; i++) {
+  res.write("&lt;li&gt;" + $items[i] + "&lt;/li&gt;");
+}
+?&gt;
+&lt;/ul&gt;</code></pre>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="mt-0.5 text-lg leading-none">⚠️</span>
+        <p class="m-0">Don't put <code>?&gt;</code> inside a JS string in the block — it closes the block early and everything after is treated as <code>&lt;?nodephp</code> source.</p>
+      </div>
+    </section>
+
+    <!-- ===== RAW BLOCKS ===== -->
+    <section id="raw-blocks">
+      <h2><code>&lt;style&gt;</code> and <code>&lt;script&gt;</code> blocks</h2>
+      <p>
+        Their contents are emitted <strong>verbatim</strong>: no interpolation, no keyword
+        sniffing, just raw CSS and JavaScript.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>&lt;style&gt;
+  body { font-family: system-ui; color: #111; }
+  .btn { padding: 8px 16px; border-radius: 8px; }
+&lt;/style&gt;
+
+&lt;script&gt;
+  let counter = 0;
+  function inc() { counter++; document.title = counter; }
+&lt;/script&gt;
+
+&lt;h1&gt;Hello $name&lt;/h1&gt;
+&lt;button class="btn" onclick="inc()"&gt;Clicked&lt;/button&gt;</code></pre>
+      </div>
+
+      <p>If <code>&lt;style&gt;</code> or <code>&lt;script&gt;</code> appears mid-line, the rest of that line is emitted raw too, and the block continues until <code>&lt;/style&gt;</code> / <code>&lt;/script&gt;</code>.</p>
+    </section>
+
+    <!-- ===== REQUEST ===== -->
+    <section id="request">
+      <h2>Request data: <code>file()</code></h2>
+      <p>
+        <code>file("METHOD")</code> returns an object when the request method matches
+        <code>METHOD</code>, and <code>false</code> when it doesn't. This is the most
+        common pattern in the language.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>if (file("POST")) {
+  $name = file("POST").body("name");
+  $password = file("POST").body("password");
+  &lt;h1&gt;Welcome, $name!&lt;/h1&gt;
+} else {
+  $q = file("GET").query("q");
+  &lt;p&gt;Search: $q&lt;/p&gt;
+}</code></pre>
+      </div>
+
+      <h3>Methods</h3>
+      <div class="my-5 overflow-x-auto">
+        <table>
+          <thead>
+            <tr><th>Call</th><th>Returns</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>file("POST")</code></td><td>object or <code>false</code></td></tr>
+            <tr><td><code>.query("key")</code></td><td>query value or <code>null</code></td></tr>
+            <tr><td><code>.query()</code></td><td>the whole query object</td></tr>
+            <tr><td><code>.body("key")</code></td><td>JSON/form value or <code>null</code></td></tr>
+            <tr><td><code>.body()</code></td><td>the whole body object</td></tr>
+            <tr><td><code>.all()</code></td><td><code>{ query, body, headers }</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Full example</h3>
+      <div class="my-5" data-code>
+        <span class="np-label">register.np</span>
+        <pre class="np-code"><code>if (!file("POST")) {
+  &lt;h1&gt;Sign up&lt;/h1&gt;
+  &lt;form method="post" action="/register.np"&gt;
+    &lt;input name="name" placeholder="Name"&gt;
+    &lt;button&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+  kill;
+}
+
+$name = file("POST").body("name");
+$host = file("POST").all().headers;
+
+&lt;h1&gt;Signed up, $name!&lt;/h1&gt;
+&lt;p&gt;Host: $host["host"]&lt;/p&gt;</code></pre>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="mt-0.5 text-lg leading-none">⚠️</span>
+        <p class="m-0">Only call <code>.body()</code> and <code>.query()</code> <strong>inside</strong> <code>if (file("..."))</code>. Calling them on the <code>false</code> result throws and returns HTTP 500.</p>
+      </div>
+    </section>
+
+    <!-- ===== CONNECT ===== -->
+    <section id="connect">
+      <h2>Outgoing requests: <code>connect()</code></h2>
+      <p>
+        Sends an HTTP request to an external URL and returns
+        <code>{ status, ok, data, headers }</code>. The <code>data</code> field is parsed
+        into an object when the response is <code>application/json</code>, and left as text
+        otherwise.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">api.np</span>
+        <pre class="np-code"><code>&lt;?nodephp
+const r = connect("https://api.example.com/users", "GET");
+
+res.json({
+  status: r.status,
+  ok: r.ok,
+  name: r.data.name
+});
+?&gt;</code></pre>
+      </div>
+
+      <h3>POST, PUT, PATCH, DELETE</h3>
+      <p>The third argument is sent as a JSON body.</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>&lt;?nodephp
+const r = connect("https://api.example.com/users", "POST", {
+  name: "Zafar",
+  age: 25
+});
+
+res.write("Created: " + r.status);
+?&gt;</code></pre>
+      </div>
+
+      <h3>Do I need <code>await</code>?</h3>
+      <p>
+        <strong>No.</strong> <code>connect()</code> is synchronous — take the result
+        directly. Writing <code>await</code> also works, but it's redundant.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>&lt;?nodephp
+// no await — works fine
+const r = connect("https://api.example.com/data");
+res.write(r.data.job);
+?&gt;</code></pre>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="mt-0.5 text-lg leading-none">🚨</span>
+        <p class="m-0"><strong>Never call your own server.</strong> <code>connect()</code> blocks Node's event loop while the request is in flight. <code>connect("http://localhost:3000/other.np")</code> deadlocks and times out after 30 seconds. Only call external hosts.</p>
+      </div>
+
+      <h3>How it works</h3>
+      <p>
+        Internally it uses <code>worker_threads</code>. A single long-lived worker is
+        created, so each call does not spawn a new Node process — the overhead is
+        negligible on Vercel. Data is handed back through <code>postMessage</code>, which
+        means quotes, <code>${...}</code> and backslashes survive intact. The timeout is 30
+        seconds.
+      </p>
+    </section>
+
+    <!-- ===== FILES ===== -->
+    <section id="files">
+      <h2>Working with files</h2>
+
+      <h3><code>readFile(path)</code></h3>
+      <p>Returns the file contents. Throws if the file is missing or empty.</p>
+
+      <h3><code>writeFile(path, data)</code></h3>
+      <p>Creates a file, or overwrites an existing one completely. If the argument is an object it's stored as JSON. Returns <code>true</code> on success.</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>&lt;?nodephp
+writeFile("data.json", { extensions: 12, language: "en" });
+
+const d = JSON.parse(readFile("data.json"));
+res.write("Extension count: " + d.extensions);
+?&gt;</code></pre>
+      </div>
+
+      <div class="callout callout-warn">
+        <span class="mt-0.5 text-lg leading-none">📁</span>
+        <p class="m-0">Paths are resolved against <code>process.cwd()</code>. <strong>On Vercel the filesystem is read-only</strong>, so these two functions do not work in a serverless environment — they're intended for the local server or a long-running Node host.</p>
+      </div>
+    </section>
+
+    <!-- ===== KILL ===== -->
+    <section id="kill">
+      <h2>Stopping a file: <code>kill;</code></h2>
+      <p>Forces execution to stop at that exact point. Nothing after it runs, and the response closes cleanly with a 200.</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">index.np</span>
+        <pre class="np-code"><code>&lt;?nodephp
+if (!file("POST")) {
+  res.write("&lt;h1&gt;POST only&lt;/h1&gt;");
+  kill;
+}
+
+res.write("this line is never reached");
+?&gt;</code></pre>
+      </div>
+
+      <p>
+        This makes routing cheap: if one branch of a file should return a
+        <code>404</code> or a redirect, you don't have to restructure the rest of it.
+      </p>
+    </section>
+
+    <!-- ===== RESPONSE API ===== -->
+    <section id="response-api">
+      <h2><code>res</code>, <code>req</code> and friends</h2>
+      <p>All of these are available directly in the <code>.np</code> file — nothing to import.</p>
+
+      <div class="my-5 overflow-x-auto">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>res.write(...)</code></td><td>Appends text to the response</td></tr>
+            <tr><td><code>res.json(obj)</code></td><td>Sends JSON, sets <code>Content-Type: application/json</code></td></tr>
+            <tr><td><code>res.status(code)</code></td><td>Sets the status code — chain it into <code>res.json(...)</code></td></tr>
+            <tr><td><code>res.setHeader(k, v)</code></td><td>Custom header</td></tr>
+            <tr><td><code>res.end(...)</code></td><td>Ends the response</td></tr>
+            <tr><td><code>req.method</code></td><td><code>"GET"</code>, <code>"POST"</code> ...</td></tr>
+            <tr><td><code>req.url</code></td><td>The full request URL</td></tr>
+            <tr><td><code>req.headers</code></td><td>Request headers object</td></tr>
+            <tr><td><code>console.log(...)</code></td><td>Writes to the terminal, not the response</td></tr>
+            <tr><td><code>fetch(...)</code></td><td>The normal <code>async</code> global <code>fetch</code></td></tr>
+            <tr><td><code>process.env</code></td><td>Environment variables (<code>PORT</code>, <code>VERCEL</code> ... on Vercel)</td></tr>
+      </tbody>
+        </table>
+      </div>
+
+      <h3>JSON API example</h3>
+      <div class="my-5" data-code>
+        <span class="np-label">api/posts.np</span>
+        <pre class="np-code"><code>if (file("POST")) {
+  $post = file("POST").body();
+  res.status(201).json({ ok: true, post: $post });
+} else {
+  res.json({ ok: true, posts: [] });
+}</code></pre>
+      </div>
+
+      <p>
+        If you never call <code>res.json()</code> or set
+        <code>Content-Type</code>, the response is sent as
+        <code>text/html; charset=utf-8</code>.
+      </p>
+    </section>
+
+    <!-- ===== API TABLE ===== -->
+    <section id="api">
+      <h2>API table</h2>
+      <div class="my-5 overflow-x-auto">
+        <table>
+          <thead>
+            <tr><th>Function</th><th>Returns</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>file(method)</code></td><td>object | <code>false</code></td><td>Depends on the request method</td></tr>
+            <tr><td><code>file().query(k?)</code></td><td>value | object | <code>null</code></td><td>URL query</td></tr>
+            <tr><td><code>file().body(k?)</code></td><td>value | object | <code>null</code></td><td>POST / JSON body</td></tr>
+            <tr><td><code>file().all()</code></td><td><code>{query, body, headers}</code></td><td>Everything at once</td></tr>
+            <tr><td><code>connect(url, m?, data?)</code></td><td><code>{status, ok, data, headers}</code></td><td>Sync, 30s timeout</td></tr>
+            <tr><td><code>readFile(path)</code></td><td><code>string</code></td><td>Throws on failure</td></tr>
+            <tr><td><code>writeFile(path, data)</code></td><td><code>true</code></td><td>Object → JSON</td></tr>
+            <tr><td><code>kill;</code></td><td>—</td><td>Halts execution</td></tr>
+            <tr><td><code>res</code>, <code>req</code></td><td>Node objects</td><td>Express-compatible API</td></tr>
+            <tr><td><code>console</code>, <code>process</code></td><td>Node globals</td><td>Available</td></tr>
+            <tr><td><code>fetch</code></td><td><code>Promise</code></td><td>Use with <code>await</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== CLI ===== -->
+    <section id="cli">
+      <h2>CLI commands</h2>
+
+      <div class="my-5" data-code>
+        <span class="np-label">terminal</span>
+        <pre class="np-code"><code># Start the local server (port 3000)
+nodephp start
+
+# Different port
+PORT=5000 nodephp start
+
+# Prepare the Vercel configuration
+nodephp build</code></pre>
+      </div>
+
+      <div class="my-5 overflow-x-auto">
+        <table>
+          <thead>
+            <tr><th>Command</th><th>What it does</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>nodephp start</code></td><td>Boots the Express server. Only <code>.np</code> URLs are accepted.</td></tr>
+            <tr><td><code>nodephp build</code></td><td>Generates <code>api/index.js</code>, <code>vercel.json</code> and a sample <code>index.np</code>.</td></tr>
+            <tr><td><code>nodephp init</code></td><td>Identical to <code>build</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== VERCEL ===== -->
+    <section id="vercel">
+      <h2>Deploy to Vercel</h2>
+      <p>One command sets up everything:</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">terminal</span>
+        <pre class="np-code"><code>npm install nodephp-js
+npx nodephp build
+vercel deploy --prod</code></pre>
+      </div>
+
+      <p><code>nodephp build</code> produces:</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">structure</span>
+        <pre class="np-code"><code>api/
+  index.js      &lt;- universal handler
+index.np        &lt;- sample file, only if missing
+vercel.json     &lt;- routes every request to the handler</code></pre>
+      </div>
+
+      <p>
+        The <code>includeFiles: "**/*.np"</code> setting inside <code>vercel.json</code>
+        bundles all <code>.np</code> files into the serverless function — without it they
+        won't be there at runtime.
+      </p>
+
+      <div class="callout callout-warn">
+        <span class="mt-0.5 text-lg leading-none">📦</span>
+        <p class="m-0">On Vercel, <code>readFile()</code> and <code>writeFile()</code> do not work (read-only filesystem), and <code>file("POST").body()</code> needs an extra body parse step. Stick to <code>query</code> and <code>headers</code> for <code>file()</code>, or just return <code>res.json()</code>.</p>
+      </div>
+    </section>
+
+    <!-- ===== VSCODE ===== -->
+    <section id="vscode">
+      <h2>VS Code extension</h2>
+      <p>
+        Syntax highlighting for <code>.np</code> files: <code>$variables</code>,
+        <code>kill;</code>, <code>&lt;?nodephp ?&gt;</code> blocks, and the
+        HTML/CSS/JS parts. Bracket matching and auto-closing pairs are included.
+      </p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">terminal</span>
+        <pre class="np-code"><code># Install from a folder
+code --install-extension ./nodephp-vscode
+
+# From the Marketplace
+code --install-extension nodephp.nodephp-vscode</code></pre>
+      </div>
+
+      <p>Folder contents: grammar in <code>syntaxes/nodephp.tmLanguage.json</code>, editor settings in <code>language-configuration.json</code>, prebuilt packages as <code>*.vsix</code>.</p>
+    </section>
+
+    <!-- ===== ARCHITECTURE ===== -->
+    <section id="architecture">
+      <h2>How it works</h2>
+      <p>The architecture is three steps long.</p>
+
+      <ol>
+        <li><strong>Split into blocks.</strong> The file is divided into <code>&lt;?nodephp ... ?&gt;</code> blocks and the remaining "template" text.</li>
+        <li><strong>Classify line by line.</strong> Each line is identified as JavaScript or HTML. Bracket depth is tracked, so multi-line expressions are detected correctly.</li>
+        <li><strong>Execute.</strong> The result is compiled with <code>AsyncFunction</code> and invoked with <code>res</code>, <code>file</code>, <code>connect</code> and friends passed in as parameters.</li>
+      </ol>
+
+      <p>Here is exactly what the first example above compiles to:</p>
+
+      <div class="my-5" data-code>
+        <span class="np-label">transpiler output</span>
+        <pre class="np-code"><code>var_name = "Muhammadhakim";
+var_date = "2026";
+  if (!res.writableEnded) { res.write(`&lt;html&gt;
+`); }
+  if (!res.writableEnded) { res.write(`  &lt;head&gt;
+`); }
+  if (!res.writableEnded) { res.write(`    &lt;title&gt;${var_name} — NodePHP&lt;/title&gt;
+`); }</code></pre>
+      </div>
+
+      <p>
+        As you can see, <code>$name</code> became <code>var_name</code> and every HTML
+        line was wrapped in <code>res.write()</code>. That is the entire transpilation.
+      </p>
+
+      <h3>Why it's built this way</h3>
+      <ul>
+        <li><strong>Simple.</strong> A single pass, zero dependencies, easy to reason about.</li>
+        <li><strong>Fast.</strong> All logic runs inside a single <code>AsyncFunction</code> — no extra layers.</li>
+        <li><strong>Safer by default.</strong> HTML text is interpolated first and then emitted as a template literal, with <code>$</code>, backticks and <code>\</code> escaped automatically.</li>
+      </ul>
+    </section>
+
+    <!-- ===== LIMITATIONS ===== -->
+    <section id="limitations">
+      <h2>Limitations</h2>
+      <p>These are real, verified issues — not hypotheticals. Knowing them saves time.</p>
+
+      <h3>1. Indexing with a variable inside HTML</h3>
+      <p>
+        The most common problem. Writing <code>$items[$i]</code> in an HTML line leaves
+        <code>$i</code> inside the interpolation and throws a <code>SyntaxError</code>.
+      </p>
+      <div class="my-5" data-code>
+        <span class="np-label">✗ broken</span>
+        <pre class="np-code"><code>$items = ["Apple", "Banana"];
+for ($i = 0; $i &lt; 2; $i++) {
+  &lt;li&gt;$items[$i]&lt;/li&gt;      &lt;- 500 SyntaxError
+}</code></pre>
+      </div>
+      <div class="my-5" data-code>
+        <span class="np-label">✓ correct</span>
+        <pre class="np-code"><code>$items = ["Apple", "Banana"];
+for ($i = 0; $i &lt; 2; $i++) {
+  $item = $items[$i];            &lt;- bind to a plain variable
+  &lt;li&gt;$item&lt;/li&gt;              &lt;- clean HTML
+}</code></pre>
+      </div>
+      <p>Or move the whole loop into a <code>&lt;?nodephp ?&gt;</code> block, where variable indexing works fine.</p>
+
+      <h3>2. Don't mix HTML onto a JS line</h3>
+      <div class="my-5" data-code>
+        <span class="np-label">✗ broken</span>
+        <pre class="np-code"><code>if ($x) { &lt;p&gt;yes&lt;/p&gt; }</code></pre>
+      </div>
+      <p>HTML tags always need their own line.</p>
+
+      <h3>3. <code>//</code> comments and lines with brackets</h3>
+      <p>
+        Line analysis strips <code>//</code> comments before anything else. As a result, a
+        line like <code>connect("https://...")</code> — brackets plus <code>//</code> — can
+        corrupt the state of the following HTML line. Workaround: leave a blank line after
+        the call, or move the logic into a <code>&lt;?nodephp ?&gt;</code> block.
+      </p>
+
+      <h3>4. <code>require</code> and <code>import</code> don't work</h3>
+      <p>
+        A <code>.np</code> file is executed as the body of an <code>AsyncFunction</code>.
+        There is no <code>require</code> and no <code>import</code> there — both produce a
+        500 error. If you need a Node module, work through <code>process</code>,
+        <code>fetch</code> or <code>connect()</code>. Dynamic <code>await import(...)</code>
+        does work.
+      </p>
+
+      <h3>5. Function calls in HTML mode don't execute</h3>
+      <p>
+        After <code>function salom($i) { ... }</code>, the line
+        <code>salom("Ali");</code> is read as HTML and printed as text. Put the call in a
+        <code>&lt;?nodephp ?&gt;</code> block or on a JS line.
+      </p>
+
+      <h3>6. <code>connect()</code> blocks the event loop</h3>
+      <p>Because it is synchronous, other requests can't be served while it waits. Never call a file on the same server.</p>
+
+      <h3>7. No compilation cache</h3>
+      <p>Every request re-reads and re-compiles the file. Fine for small sites, not what you want under real traffic.</p>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq">
+      <h2>FAQ</h2>
+
+      <h3>Can I use jQuery?</h3>
+      <p>
+        No. <code>$</code> always means a NodePHP variable. If you need jQuery in the page,
+        load it from a <code>&lt;script&gt;</code> block — that content is emitted raw.
+      </p>
+
+      <h3>Can I write prices like <code>$5.00</code>?</h3>
+      <p>Yes. A digit after <code>$</code> is not treated as a variable, so the text passes through unchanged.</p>
+
+      <h3>What about Markdown or JSX?</h3>
+      <p>Not supported. NodePHP handles plain HTML and JavaScript only. Convert Markdown to HTML in a build step if you need it.</p>
+
+      <h3>Can I talk to a database?</h3>
+      <p>
+        Not directly, because <code>import</code> isn't available. But <code>connect()</code>
+        lets you reach any REST API, which covers most hosted databases.
+      </p>
+
+      <h3>Can I cache the output?</h3>
+      <p>
+        Yes — just write <code>res.setHeader("Cache-Control", "max-age=600")</code>. There
+        is no internal compilation cache, though.
+      </p>
+
+      <h3>Does it work inside an existing Node app?</h3>
+      <p>
+        Yes. <code>executeNodePHP</code> and <code>transpileNodePHP</code> are exported —
+        import them from <code>nodephp-js/lib/engine.js</code>.
+      </p>
+    </section>
+
+    <hr>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 text-sm">
+      <p class="m-0 text-ink-500 dark:text-ink-400">
+        NodePHP &middot; 1.0.8 &middot; MIT licensed
+      </p>
+      <div class="flex gap-4">
+        <a href="https://github.com/bmk2010/nodephp" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://www.npmjs.com/package/nodephp-js" target="_blank" rel="noreferrer">npm</a>
+        <a href="./uz.html" class="font-semibold text-brand-600 dark:text-brand-300">O'zbekcha &rarr;</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="border-t border-ink-200 bg-ink-50 py-10 dark:border-white/10 dark:bg-white/[0.02]">
+  <div class="mx-auto flex max-w-[1400px] flex-col items-center gap-3 px-4 text-center text-[13px] text-ink-500 sm:flex-row sm:justify-between sm:px-6 sm:text-left dark:text-ink-400">
+    <p class="m-0">🐘 NodePHP — PHP-style syntax for Node.js and Vercel.</p>
+    <p class="m-0">Available in: <a href="./uz.html" class="font-semibold text-brand-600 dark:text-brand-300">O'zbekcha</a> · <a href="./en.html" class="font-semibold text-brand-600 dark:text-brand-300">English</a></p>
+  </div>
+</footer>
+
+  <script src="./site.js" defer></script>
+</body>
+</html>
